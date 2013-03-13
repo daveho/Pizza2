@@ -15,6 +15,8 @@ import edu.ycp.cs320.pizza.shared.Topping;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
 
 public class PizzaView extends Composite implements ISubscriber {
 	private Pizza model;
@@ -41,6 +43,11 @@ public class PizzaView extends Composite implements ISubscriber {
 		layoutPanel.setWidgetTopHeight(toppingsLabel, 93.0, Unit.PX, 18.0, Unit.PX);
 		
 		sizeComboBox = new ListBox();
+		sizeComboBox.addChangeHandler(new ChangeHandler() {
+			public void onChange(ChangeEvent event) {
+				handleChangeSize();
+			}
+		});
 		layoutPanel.add(sizeComboBox);
 		layoutPanel.setWidgetLeftWidth(sizeComboBox, 82.0, Unit.PX, 191.0, Unit.PX);
 		layoutPanel.setWidgetTopHeight(sizeComboBox, 43.0, Unit.PX, 26.0, Unit.PX);
@@ -78,6 +85,14 @@ public class PizzaView extends Composite implements ISubscriber {
 		layoutPanel.add(removeToppingsButton);
 		layoutPanel.setWidgetLeftWidth(removeToppingsButton, 208.0, Unit.PX, 98.0, Unit.PX);
 		layoutPanel.setWidgetTopHeight(removeToppingsButton, 182.0, Unit.PX, 30.0, Unit.PX);
+	}
+
+	protected void handleChangeSize() {
+		int selIndex = sizeComboBox.getSelectedIndex();
+		if (selIndex >= 0) {
+			Size size = Size.valueOf(sizeComboBox.getItemText(selIndex));
+			model.setSize(size);
+		}
 	}
 
 	protected void handleAddTopping() {

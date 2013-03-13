@@ -1,8 +1,10 @@
 package edu.ycp.cs320.pizza.shared;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class Order extends Publisher implements ISubscriber {
+@SuppressWarnings("serial")
+public class Order extends Publisher implements ISubscriber, Serializable {
 	public enum Events {
 		PRICE_CHANGED,
 	}

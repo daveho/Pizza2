@@ -1,7 +1,11 @@
 package edu.ycp.cs320.pizza.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import edu.ycp.cs320.pizza.shared.Order;
+
+@RemoteServiceRelativePath("order")
 public interface OrderService extends RemoteService {
 	/**
 	 * Just for testing.
@@ -14,8 +18,8 @@ public interface OrderService extends RemoteService {
 	/**
 	 * Place an order.
 	 * 
-	 * @param pizza the pizza to be ordered
+	 * @param the Order to place
 	 * @return true if successful, false otherwise
 	 */
-	public Boolean placeOrder(PizzaApp pizza, String customerName, String customerAddress);
+	public Boolean placeOrder(Order order);
 }

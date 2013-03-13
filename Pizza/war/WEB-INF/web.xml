@@ -6,6 +6,14 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
+  <servlet>
+    <servlet-name>OrderServiceImpl</servlet-name>
+    <servlet-class>edu.ycp.cs320.pizza.server.OrderServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrderServiceImpl</servlet-name>
+    <url-pattern>/pizza/order</url-pattern>
+  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
