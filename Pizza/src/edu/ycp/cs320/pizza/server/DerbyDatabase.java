@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import edu.ycp.cs320.pizza.shared.Order;
+import edu.ycp.cs320.pizza.shared.OrderReceipt;
 
 public class DerbyDatabase implements IDatabase {
 	private static final String DATASTORE = "/home/dhovemey/pizzadb";
@@ -67,7 +69,7 @@ public class DerbyDatabase implements IDatabase {
 		}
 	}
 	
-	private void createTables() throws SQLException {
+	void createTables() throws SQLException {
 		databaseRun(new ITransaction<Boolean>() {
 			@Override
 			public Boolean run(Connection conn) throws SQLException {
@@ -76,7 +78,7 @@ public class DerbyDatabase implements IDatabase {
 				
 				try {
 					stmt = conn.prepareStatement(
-							"create table orders (" +
+							"create table order_receipts (" +
 							"  id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
 							"  userinfo VARCHAR(200) NOT NULL, " +
 							"  price DECIMAL(10,2) " +
@@ -92,14 +94,24 @@ public class DerbyDatabase implements IDatabase {
 	}
 	
 	@Override
-	public Boolean placeOrder(Order order) {
-		// TODO Auto-generated method stub
-		return null;
+	public OrderReceipt placeOrder(Order order) throws SQLException {
+		return databaseRun(new ITransaction<OrderReceipt>() {
+			@Override
+			public OrderReceipt run(Connection conn) throws SQLException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
 	}
 	
-	public static void main(String[] args) throws SQLException {
-		DerbyDatabase db = new DerbyDatabase();
-		db.createTables();
-		System.out.println("Successfully created tables");
+	@Override
+	public List<OrderReceipt> getOrderReceipts() throws SQLException {
+		return databaseRun(new ITransaction<List<OrderReceipt>>() {
+			@Override
+			public List<OrderReceipt> run(Connection conn) throws SQLException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
 	}
 }
