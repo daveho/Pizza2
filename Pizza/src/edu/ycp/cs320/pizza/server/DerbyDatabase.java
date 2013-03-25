@@ -10,7 +10,7 @@ import edu.ycp.cs320.pizza.shared.Order;
 import edu.ycp.cs320.pizza.shared.OrderReceipt;
 
 public class DerbyDatabase implements IDatabase {
-	private static final String DATASTORE = "/home/dhovemey/pizzadb";
+	private static final String DATASTORE = "H:/pizzadb";
 	
 	static {
 		try {
@@ -60,7 +60,9 @@ public class DerbyDatabase implements IDatabase {
 			try {
 				dbConn.conn.setAutoCommit(false);
 
-				return transaction.run(dbConn.conn);
+				E result = transaction.run(dbConn.conn);
+				dbConn.conn.commit();
+				return result;
 			} finally {
 				dbConn.conn.setAutoCommit(origAutoCommit);
 			}
