@@ -1,9 +1,12 @@
 package edu.ycp.cs320.pizza.server;
 
+import java.sql.SQLException;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.ycp.cs320.pizza.client.OrderService;
 import edu.ycp.cs320.pizza.shared.Order;
+import edu.ycp.cs320.pizza.shared.OrderReceipt;
 
 public class OrderServiceImpl extends RemoteServiceServlet implements OrderService {
 	private static final long serialVersionUID = 1L;
@@ -19,8 +22,14 @@ public class OrderServiceImpl extends RemoteServiceServlet implements OrderServi
 		System.out.println("Ordering a " + order.getPizza().getSize() + " pizza");
 		System.out.println("Price is $" + order.getPrice().toString());
 		
-		// TODO: use a controller to carry out all actions for ordering a pizza
+		try {
+			OrderReceipt receipt = DBUtil.instance().placeOrder(order);
+			System.out.println("Placed order: receipt id=" + receipt.getId());
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Could not insert order: " + e.getMessage());
+			return false;
+		}
 		
-		return true;
 	}
 }
