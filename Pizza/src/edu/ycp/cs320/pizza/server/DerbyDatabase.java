@@ -90,6 +90,7 @@ public class DerbyDatabase implements IDatabase {
 					);
 					
 					stmt.executeUpdate();
+					
 				} finally {
 					DBUtil.closeQuietly(stmt);
 				}
@@ -106,12 +107,11 @@ public class DerbyDatabase implements IDatabase {
 			public OrderReceipt run(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet generatedKeys = null;
-				
-				OrderReceipt receipt = new OrderReceipt();
-				receipt.setUserInfo(order.getUser());
-				receipt.setPrice(order.getPrice());
-				
+
 				try {
+					OrderReceipt receipt = new OrderReceipt();
+					receipt.setUserInfo(order.getUser());
+					receipt.setPrice(order.getPrice());
 					
 					stmt = conn.prepareStatement(
 							"insert into order_receipts (userinfo, price) values (?, ?)",
@@ -124,15 +124,17 @@ public class DerbyDatabase implements IDatabase {
 					stmt.executeUpdate();
 					
 					generatedKeys = stmt.getGeneratedKeys();
-					if (!generatedKeys.next()){
-						throw new SQLException("Could not get generated key for order receipt");
+					
+					if (!generatedKeys.next()) {
+						throw new SQLException("Couldn't get generated key for order receipt");
 					}
+					
 					receipt.setId(generatedKeys.getInt(1));
 					
 					return receipt;
-					
 				} finally {
 					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(generatedKeys);
 				}
 			}
 		});
@@ -162,8 +164,8 @@ public class DerbyDatabase implements IDatabase {
 						result.add(receipt);
 					}
 					
-					
 					return result;
+					
 				} finally {
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(resultSet);
