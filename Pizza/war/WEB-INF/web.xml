@@ -15,6 +15,15 @@
     <url-pattern>/pizza/order</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>Receipts</servlet-name>
+    <servlet-class>edu.ycp.cs320.pizza.server.Receipts</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Receipts</servlet-name>
+    <url-pattern>/receipts/*</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>Pizza.html</welcome-file>
