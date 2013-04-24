@@ -3,14 +3,16 @@ package edu.ycp.cs320.pizza.server;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.ycp.cs320.pizza.shared.Order;
 import edu.ycp.cs320.pizza.shared.OrderReceipt;
 
 public class DerbyDatabase implements IDatabase {
-	private static final String DATASTORE = "/home/dhovemey/pizzadb";
+	private static final String DATASTORE = "H:/pizzadb";
 	
 	static {
 		try {
@@ -60,7 +62,9 @@ public class DerbyDatabase implements IDatabase {
 			try {
 				dbConn.conn.setAutoCommit(false);
 
-				return transaction.run(dbConn.conn);
+				E result = transaction.run(dbConn.conn);
+				dbConn.conn.commit();
+				return result;
 			} finally {
 				dbConn.conn.setAutoCommit(origAutoCommit);
 			}
@@ -84,6 +88,8 @@ public class DerbyDatabase implements IDatabase {
 							"  price DECIMAL(10,2) " +
 							")"
 					);
+					
+					stmt.executeUpdate();
 				} finally {
 					DBUtil.closeQuietly(stmt);
 				}
@@ -94,12 +100,40 @@ public class DerbyDatabase implements IDatabase {
 	}
 	
 	@Override
-	public OrderReceipt placeOrder(Order order) throws SQLException {
+	public OrderReceipt placeOrder(final Order order) throws SQLException {
 		return databaseRun(new ITransaction<OrderReceipt>() {
 			@Override
 			public OrderReceipt run(Connection conn) throws SQLException {
-				// TODO Auto-generated method stub
-				return null;
+				PreparedStatement stmt = null;
+				ResultSet generatedKeys = null;
+				
+				OrderReceipt receipt = new OrderReceipt();
+				receipt.setUserInfo(order.getUser());
+				receipt.setPrice(order.getPrice());
+				
+				try {
+					
+					stmt = conn.prepareStatement(
+							"insert into order_receipts (userinfo, price) values (?, ?)",
+							PreparedStatement.RETURN_GENERATED_KEYS
+					);
+					
+					stmt.setString(1, receipt.getUserInfo());
+					stmt.setBigDecimal(2, receipt.getPrice());
+					
+					stmt.executeUpdate();
+					
+					generatedKeys = stmt.getGeneratedKeys();
+					if (!generatedKeys.next()){
+						throw new SQLException("Could not get generated key for order receipt");
+					}
+					receipt.setId(generatedKeys.getInt(1));
+					
+					return receipt;
+					
+				} finally {
+					DBUtil.closeQuietly(stmt);
+				}
 			}
 		});
 	}
@@ -109,8 +143,31 @@ public class DerbyDatabase implements IDatabase {
 		return databaseRun(new ITransaction<List<OrderReceipt>>() {
 			@Override
 			public List<OrderReceipt> run(Connection conn) throws SQLException {
-				// TODO Auto-generated method stub
-				return null;
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement("select * from order_receipts");
+					resultSet = stmt.executeQuery();
+					
+					List<OrderReceipt> result = new ArrayList<OrderReceipt>();
+					
+					while (resultSet.next()) {
+						OrderReceipt receipt = new OrderReceipt();
+						
+						receipt.setId(resultSet.getInt(1));
+						receipt.setUserInfo(resultSet.getString(2));
+						receipt.setPrice(resultSet.getBigDecimal(3));
+						
+						result.add(receipt);
+					}
+					
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(resultSet);
+				}
 			}
 		});
 	}
