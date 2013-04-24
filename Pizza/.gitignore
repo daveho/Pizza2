@@ -4,3 +4,4 @@
 /war/WEB-INF/lib/gwt-servlet.jar
 *.gwt.rpc
 derby.log
+/test-classes
