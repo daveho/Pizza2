@@ -1,11 +1,15 @@
 package edu.ycp.cs320.pizza.server;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import edu.ycp.cs320.pizza.shared.OrderReceipt;
 
 /**
  * Web service for accessing order receipts.
@@ -21,12 +25,19 @@ public class Receipts extends HttpServlet {
 		// would be "/42".
 		String info = req.getPathInfo();
 		System.out.println("Path info is: " + info);
-		
-		// TODO: handle the request
-		
-		// TODO: write the response body with data from the database
-		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.setContentType("text/plain");
-		resp.getWriter().println("Success!");
+
+		try {
+			List<OrderReceipt> receipts = DBUtil.instance().getOrderReceipts();
+			
+			// TODO: write the response body with data from the database
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.setContentType("text/csv");
+			
+			for (OrderReceipt r : receipts) {
+				resp.getWriter().println(r.getId() + "," + r.getUserInfo() + "," + r.getPrice().toString());
+			}
+		} catch (SQLException e) {
+			throw new ServletException("SQLException retrieving order receipts", e);
+		}
 	}
 }
