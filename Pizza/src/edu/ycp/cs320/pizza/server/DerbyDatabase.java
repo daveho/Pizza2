@@ -12,7 +12,7 @@ import edu.ycp.cs320.pizza.shared.Order;
 import edu.ycp.cs320.pizza.shared.OrderReceipt;
 
 public class DerbyDatabase implements IDatabase {
-	private static final String DATASTORE = "H:/pizzadb";
+	private static final String DATASTORE = System.getProperty("user.home") + "/pizzadb"; // "H:/pizzadb";
 	
 	static {
 		try {
