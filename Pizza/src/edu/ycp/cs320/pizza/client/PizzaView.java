@@ -83,7 +83,7 @@ public class PizzaView extends Composite implements ISubscriber {
 		});
 		removeToppingsButton.setText("Remove >>");
 		layoutPanel.add(removeToppingsButton);
-		layoutPanel.setWidgetLeftWidth(removeToppingsButton, 208.0, Unit.PX, 98.0, Unit.PX);
+		layoutPanel.setWidgetLeftWidth(removeToppingsButton, 208.0, Unit.PX, 104.0, Unit.PX);
 		layoutPanel.setWidgetTopHeight(removeToppingsButton, 182.0, Unit.PX, 30.0, Unit.PX);
 	}
 
